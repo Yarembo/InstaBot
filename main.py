@@ -452,6 +452,80 @@ class InstagramBot():
                 for link in followers_urls:
                     text_file.write(link + "\n")
 
+# метод для отправки сообщений в директ
+    def send_direct_message(self, usernames="", message="", img_path=''):
+
+        browser = self.browser
+        time.sleep(random.randrange(2, 4))
+
+        direct_message_button = "/html/body/div[2]/div/div/div[1]/div/div/div/div[1]/div[1]/div[1]/div/div/div/div/div[2]/div[5]"
+
+        if not self.xpath_exists(direct_message_button):
+            print("Кнопка отправки сообщений не найдена!")
+            self.close_browser()
+        else:
+            print("Отправляем сообщение...")
+            direct_message = browser.find_element(By.XPATH, direct_message_button).click()
+            time.sleep(random.randrange(2, 5))
+
+        # отключаем всплывающее окно
+        if self.xpath_exists("/html/body/div[2]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/span"):
+            browser.find_element(By.XPATH, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/button[2]").click()
+        time.sleep(random.randrange(2, 4))
+
+        send_message_button = browser.find_element(By.XPATH,
+            "/html/body/div[2]/div/div/div[1]/div/div/div/div[1]/div[1]/div/div[2]/div/section/div/div/div/div/div[2]/div/div[3]/div/button").click()
+        time.sleep(random.randrange(2, 4))
+
+        to_input = browser.find_element(By.XPATH,
+                                        "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[2]/div[1]/div/div[2]/input")
+        to_input.send_keys(usernames)
+        time.sleep(random.randrange(2, 4))
+
+        # выбираем получателя из списка
+        users_list = browser.find_element(By.XPATH,
+            "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[2]/div[2]/div[1]/div[1]/div/div/div[3]/div/button").click()
+        time.sleep(random.randrange(2, 4))
+
+        # # отправка сообщения нескольким пользователям
+        # # for user in usernames:
+        #     # вводим получателя
+        #     to_input = browser.find_element(By.XPATH, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[2]/div[1]/div/div[2]/input")
+        #     to_input.send_keys(user)
+        #     time.sleep(random.randrange(2, 4))
+
+            # # выбираем получателя из списка
+            # users_list = browser.find_element(By.XPATH,
+            #     "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[2]/div[2]/div[1]/div[1]/div/div/div[3]/div/button").click()
+            # time.sleep(random.randrange(10, 15))
+
+        next_button = browser.find_element(By.XPATH,
+            "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div[1]/div/div[3]/div/button/div").click()
+        time.sleep(random.randrange(2, 4))
+
+        # отправка текстового сообщения
+        if message:
+            text_message_area_activate = browser.find_element(By.XPATH,
+                "/html/body/div[2]/div/div/div[1]/div/div/div/div[1]/div[1]/div/div[2]/div/section/div/div/div/div/div[2]/div[2]/div/div[2]/div/div/div[2]").click()
+            text_message_area = browser.find_element(By.XPATH, "/html/body/div[2]/div/div/div[1]/div/div/div/div[1]/div[1]/div/div[2]/div/section/div/div/div/div/div[2]/div[2]/div/div[2]/div/div/div[2]/textarea")
+            text_message_area.clear()
+            text_message_area.send_keys(message)
+            time.sleep(random.randrange(2, 4))
+            text_message_area.send_keys(Keys.ENTER)
+            print(f"Сообщение для {usernames} успешно отправлено!")
+            time.sleep(random.randrange(2, 4))
+
+        # отправка изображения
+        if img_path:
+            send_img_input = browser.find_element(By.XPATH, "/html/body/div[1]/section/div/div[2]/div/div/div[2]/div[2]/div/div[2]/div/div/form/input")
+            send_img_input.send_keys(img_path)
+            print(f"Изображение для {usernames} успешно отправлено!")
+            time.sleep(random.randrange(2, 4))
+
+        self.close_browser()
+
+
+
 my_bot = InstagramBot(username, password)
 my_bot.login()
 # my_bot.put_exactly_like('put url on post')
@@ -460,5 +534,6 @@ my_bot.login()
 # my_bot.download_userpost('https://www.instagram.com/p/CKJcxbFFkR2bi2Dr21iMj4FqwTK8TdgTzjX_Mw0/')
 # my_bot.xpath_exists('put url in xpath')
 # my_bot.like_photo_by_hashtag('put hashtag')
-my_bot.get_all_followers("https://www.instagram.com/_oh_ira/")
+# my_bot.get_all_followers("https://www.instagram.com/_oh_ira/")
 # my_bot.get_followers("https://www.instagram.com/zhiigulsky/")
+my_bot.send_direct_message("andrey.y.s", "Hey! How's it going?")
