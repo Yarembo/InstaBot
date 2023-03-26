@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from data import username, password
+from data import users_settings_dict
 import time
 import random
 from selenium.common.exceptions import NoSuchElementException
@@ -517,23 +517,27 @@ class InstagramBot():
 
         # отправка изображения
         if img_path:
-            send_img_input = browser.find_element(By.XPATH, "/html/body/div[1]/section/div/div[2]/div/div/div[2]/div[2]/div/div[2]/div/div/form/input")
+            send_img_input = browser.find_element(By.XPATH, "/html/body/div[2]/div/div/div[1]/div/div/div/div[1]/div[1]/div/div[2]/div/section/div/div/div/div/div[2]/div[2]/div/div[2]/div/div/button[1]")
             send_img_input.send_keys(img_path)
             print(f"Изображение для {usernames} успешно отправлено!")
             time.sleep(random.randrange(2, 4))
 
         self.close_browser()
 
+for user, user_data in users_settings_dict.items():
+    username = user_data['login']
+    password = user_data['password']
+
 
 
 my_bot = InstagramBot(username, password)
 my_bot.login()
 # my_bot.put_exactly_like('put url on post')
-# my_bot.put_many_likes('https://www.instagram.com/andrey.y.s/')
-# my_bot.download_userpage_content('https://www.instagram.com/amishuanya/')
-# my_bot.download_userpost('https://www.instagram.com/p/CKJcxbFFkR2bi2Dr21iMj4FqwTK8TdgTzjX_Mw0/')
+# my_bot.put_many_likes('')
+# my_bot.download_userpage_content('')
+# my_bot.download_userpost('')
 # my_bot.xpath_exists('put url in xpath')
 # my_bot.like_photo_by_hashtag('put hashtag')
-# my_bot.get_all_followers("https://www.instagram.com/_oh_ira/")
-# my_bot.get_followers("https://www.instagram.com/zhiigulsky/")
-my_bot.send_direct_message("andrey.y.s", "Hey! How's it going?")
+# my_bot.get_all_followers("")
+# my_bot.get_followers("")
+my_bot.send_direct_message("", "Hey! How's it going?")
