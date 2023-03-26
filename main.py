@@ -1,20 +1,23 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.options import Options
 from data import users_settings_dict
 import time
 import random
-from selenium.common.exceptions import NoSuchElementException
 import requests
 import os
 
 class InstagramBot():
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, window_size):
 
         self.username = username
         self.password = password
-        self.browser = webdriver.Chrome('../chromedriver/chromedriver')
+        options = Options()
+        options.add_argument(f"--window-size={window_size}")
+        self.browser = webdriver.Chrome('../chromedriver/chromedriver', options=options)
 
     def close_browser(self):
 
@@ -424,9 +427,9 @@ class InstagramBot():
             print(f"Пользователь {file_name} успешно найден, начинаем скачивать ссылки на подписчиков!")
             time.sleep(2)
 
-            followers_button = browser.find_element(By.XPATH, "/html/body/div[2]/div/div/div[1]/div/div/div/div[1]/div[1]/div[2]/section/main/div/header/section/ul/li[2]/a/span/span/span")
-            followers_count = followers_button.text
-            followers_count = int(followers_count.split(' ')[0])
+            followers_button = browser.find_element(By.XPATH, "/html/body/div[2]/div/div/div[1]/div/div/div/div[1]/div[1]/div[2]/section/main/div/header/section/ul/li[2]/a/span/span")
+            followers_count = followers_button.get_attribute('title').replace("\xa0", "")
+            followers_count = int(followers_count)
             print(f"Количество подписчиков: {followers_count}")
             time.sleep(2)
 
@@ -524,20 +527,26 @@ class InstagramBot():
 
         self.close_browser()
 
-for user, user_data in users_settings_dict.items():
+for user1, user_data in users_settings_dict.items():
     username = user_data['login']
     password = user_data['password']
+    windows_size = user_data['window_size']
+
+    my_bot = InstagramBot(username, password, windows_size)
+    my_bot.login()
+    my_bot.get_followers("https://www.instagram.com/cr7cristianoronaldo/")
+    my_bot.close_browser()
+    time.sleep(random.randrange(4,10))
 
 
-
-my_bot = InstagramBot(username, password)
-my_bot.login()
-# my_bot.put_exactly_like('put url on post')
-# my_bot.put_many_likes('')
-# my_bot.download_userpage_content('')
-# my_bot.download_userpost('')
-# my_bot.xpath_exists('put url in xpath')
-# my_bot.like_photo_by_hashtag('put hashtag')
-# my_bot.get_all_followers("")
-# my_bot.get_followers("")
-my_bot.send_direct_message("", "Hey! How's it going?")
+# my_bot = InstagramBot(username, password)
+# my_bot.login()
+# # my_bot.put_exactly_like('put url on post')
+# # my_bot.put_many_likes('')
+# # my_bot.download_userpage_content('')
+# # my_bot.download_userpost('')
+# # my_bot.xpath_exists('put url in xpath')
+# # my_bot.like_photo_by_hashtag('put hashtag')
+# # my_bot.get_all_followers("")
+# # my_bot.get_followers("")
+# my_bot.send_direct_message("", "Hey! How's it going?")
